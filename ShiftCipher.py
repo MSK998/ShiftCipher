@@ -1,10 +1,10 @@
 import re
 
 
-def count_occurrences():
+def count_occurrences(encoded_string):
 
     occurrences = dict()
-    input_string = input("Please input the string you would like to count\n").lower()
+    input_string = encoded_string
     formatted = re.sub(r'\W+', '', input_string)
 
     for i in formatted:
@@ -16,12 +16,20 @@ def count_occurrences():
     for i in sorted(occurrences.keys()):
         print(i + "\t" + str(occurrences[i]))
 
-    print(max(occurrences, key=occurrences.get))
+    return ord(max(occurrences, key=occurrences.get))
 
 
 def decode():
-
-    print("Not Implemented Yet")
+    encoded_string = input("Please input the string you would like to count\n")
+    shift_known = input("Do you know the shift value?\n1. Yes\n2. No\n")
+    if shift_known == 1:
+        print("shift known")
+    elif shift_known == 2:
+        print("shift unknown")
+    else:
+        print("Enter a valid choice")
+        exit(0)
+    common_char = count_occurrences(encoded_string.lower())
 
 
 def shift_ascii(ascii_max, shift_value, char):
@@ -64,7 +72,10 @@ def main():
     if choice == 1:
         encode()
     elif choice == 2:
-        count_occurrences()
+        decode()
+    else:
+        print("Please pick a valid choice")
+        exit(0)
 
 
 if __name__ == "__main__":
