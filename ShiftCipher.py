@@ -21,18 +21,37 @@ def count_occurrences(encoded_string):
 
 def decode():
     encoded_string = input("Please input the string you would like to count\n")
-    shift_known = input("Do you know the shift value?\n1. Yes\n2. No\n")
+    shift_known = int(input("Do you know the shift value?\n1. Yes\n2. No\n"))
+    decoded_string = ""
+
     if shift_known == 1:
         print("shift known")
     elif shift_known == 2:
-        print("shift unknown")
+        common_char = count_occurrences(encoded_string.lower())
+        shift = common_char - ord("e")
+        print(abs(shift))
+
+        for char in encoded_string:
+            if (ord(char) < 91) & (ord(char) > 64):
+                decoded_string += decode_shift_ascii(65, -shift, char)
+
+            elif (ord(char) < 123) & (ord(char) > 96):
+                decoded_string += decode_shift_ascii(97, -shift, char)
+
+            else:
+                decoded_string += char
     else:
         print("Enter a valid choice")
         exit(0)
-    common_char = count_occurrences(encoded_string.lower())
+
+    print(decoded_string)
 
 
-def shift_ascii(ascii_max, shift_value, char):
+def decode_shift_ascii(ascii_min, shift_value, char):
+    print("Not implemented")
+
+
+def encode_shift_ascii(ascii_max, shift_value, char):
     if (ascii_max - ord(char)) <= shift_value:
         return chr(65 + (shift_value - (90 - ord(char))))
     elif (ascii_max - ord(char)) > shift_value:
