@@ -1,6 +1,7 @@
 import re
 
 
+# abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ
 def count_occurrences(encoded_string):
 
     occurrences = dict()
@@ -19,27 +20,42 @@ def count_occurrences(encoded_string):
     return ord(max(occurrences, key=occurrences.get))
 
 
+def decode_shift_ascii(ascii_min, shift_value, char):
+    if (ord(char) - ascii_min) < shift_value:
+        return chr((ascii_min + 26) - (shift_value - (ord(char) - ascii_min)))
+    elif (ord(char) - ascii_min) >= shift_value:
+        return chr((ord(char) - shift_value))
+
+
+def decode_iterator(char, shift):
+    if (ord(char) < 91) & (ord(char) > 64):
+        return decode_shift_ascii(65, shift, char)
+
+    elif (ord(char) < 123) & (ord(char) > 96):
+        return decode_shift_ascii(97, shift, char)
+
+    else:
+        return char
+
+
 def decode():
-    encoded_string = input("Please input the string you would like to count\n")
+    encoded_string = input("Please input the string you would like to decode\n")
     shift_known = int(input("Do you know the shift value?\n1. Yes\n2. No\n"))
     decoded_string = ""
 
     if shift_known == 1:
-        print("shift known")
+        shift = int(input("What is the shift value?"))
+
+        for char in encoded_string:
+            decoded_string += decode_iterator(char, shift)
+
     elif shift_known == 2:
         common_char = count_occurrences(encoded_string.lower())
         shift = common_char - ord("e")
         print(abs(shift))
 
         for char in encoded_string:
-            if (ord(char) < 91) & (ord(char) > 64):
-                decoded_string += decode_shift_ascii(65, -shift, char)
-
-            elif (ord(char) < 123) & (ord(char) > 96):
-                decoded_string += decode_shift_ascii(97, -shift, char)
-
-            else:
-                decoded_string += char
+            decoded_string += decode_iterator(char, shift)
     else:
         print("Enter a valid choice")
         exit(0)
@@ -47,13 +63,9 @@ def decode():
     print(decoded_string)
 
 
-def decode_shift_ascii(ascii_min, shift_value, char):
-    print("Not implemented")
-
-
 def encode_shift_ascii(ascii_max, shift_value, char):
     if (ascii_max - ord(char)) <= shift_value:
-        return chr(65 + (shift_value - (90 - ord(char))))
+        return chr((ascii_max - 26) + (shift_value - (ascii_max - ord(char))))
     elif (ascii_max - ord(char)) > shift_value:
         return chr(ord(char) + shift_value)
 
@@ -64,10 +76,10 @@ def encode_string(input_string, shift_value):
 
     for char in origin_string:
         if (ord(char) < 91) & (ord(char) > 64):
-            encoded_string += shift_ascii(90, shift_value, char)
+            encoded_string += encode_shift_ascii(91, shift_value, char)
 
         elif (ord(char) < 123) & (ord(char) > 96):
-            encoded_string += shift_ascii(122, shift_value, char)
+            encoded_string += encode_shift_ascii(123, shift_value, char)
 
         else:
             encoded_string += char
